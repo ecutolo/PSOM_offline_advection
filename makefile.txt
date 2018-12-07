@@ -1,0 +1,1 @@
+ifort -o offline_advection header.f90 main.f90 advect.f90 advection_and_mixing.f90 ini_tracer.f90 mixing_horizontal.f90 mixing_isopycnal.f90 mixing_vertical.f90 tracersource_nut.f90 write_cdf_3D.f90
