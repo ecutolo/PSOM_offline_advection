@@ -23,6 +23,7 @@
 	  !integer :: idvwb,idvwc,idvwpv,idvw,idvy,idvzsave,idvz,idvz3,idwdx,idwdy,idwdz,iimday,ipos
 	  integer :: idvx,idvcon100,idFaceFile,idvuf,idvvf,idvwf,idvKf,idF
 	  integer :: nstp
+	  integer :: idT
 	  REAL(kind=rc_kind) ::  rcode
 !
       !double precision Tr(0:NI+1,0:NJ+1,0:NK+1,ntr), &

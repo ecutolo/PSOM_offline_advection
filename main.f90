@@ -8,6 +8,7 @@ REAL(kind=rc_kind) ::  dtim
 nsteps = 10
 initime = 0
 nbegin = initime
+out3d_int = 100
 
 ! 1. Initialize the tracers
 CALL init_setup
@@ -31,7 +32,7 @@ do step = initime,(initime+nsteps)
     CALL tracersource(step,dtim)
     ! 3. Save the tracer in a netcdf file
     if (mod(step,out3d_int).eq.0) then
-        CALL write_cdf_3D(step,n)
+  !      CALL write_cdf_3D(step,n)
     endif
 enddo ! steps
 
