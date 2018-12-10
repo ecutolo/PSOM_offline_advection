@@ -16,12 +16,12 @@
       integer NI2,NJ2,NK2,i,j,k,l,nbegin
       parameter ( NI2=NI+2,NJ2=NJ+2,NK2=NK+2)
 	  
-	  integer :: iddatfile, idigit, idudx, idudy, idudz, idvbysection, idvby, idvbz, idvcon, idvcy, idvbx
-	  integer :: idvcz, idvc, idvdivfeddy, idvdivfreyn, idvdx, idvdz, idvd, idvfb, idvh, idvn2bar
-	  integer :: idvn2, idvnsq100m, idvnsq30m, idvpe,idvpsiv,idvpsiw,idvpv, idvp,idvrhbar,idvrho,idvrnk
-	  integer :: idvstrain,idvstress,idvstr,idvs,idvtbar,idvtemp,idvtim,idvtr,idvt,idvu,idvvb,idvvc,idvvor,idvv
-	  integer :: idvwb,idvwc,idvwpv,idvw,idvy,idvzsave,idvz,idvz3,idwdx,idwdy,idwdz,iimday,ipos
-	  integer :: idvx,idvcon100,idFaceFile,idvuf, idvvf, idvwf, idvKf, idT, idF, idG
+	  !integer :: iddatfile, idigit, idudx, idudy, idudz, idvbysection, idvby, idvbz, idvcon, idvcy, idvbx
+	  !integer :: idvcz, idvc, idvdivfeddy, idvdivfreyn, idvdx, idvdz, idvd, idvfb, idvh, idvn2bar
+	  !integer :: idvn2, idvnsq100m, idvnsq30m, idvpe,idvpsiv,idvpsiw,idvpv, idvp,idvrhbar,idvrho,idvrnk
+	  !integer :: idvstrain,idvstress,idvstr,idvs,idvtbar,idvtemp,idvtim,idvtr,idvt,idvu,idvvb,idvvc,idvvor,idvv
+	  !integer :: idvwb,idvwc,idvwpv,idvw,idvy,idvzsave,idvz,idvz3,idwdx,idwdy,idwdz,iimday,ipos
+	  integer :: idvx,idvcon100,idFaceFile,idvuf,idvvf,idvwf,idvKf,idF
 	  integer :: nstp
 	  REAL(kind=rc_kind) ::  rcode
 !
@@ -69,44 +69,26 @@
        nstp = nstp / 10
  10   continue
 
-      write(6,*) 'reading in file:', outname
-
       idT = ncopn(outname, NCNOWRIT,rcode)
-!     idG = ncopn('rect.grid.cdf', NCNOWRIT,rcode)
-!
+      idvx = ncvid(idT,'xc',rcode)
+      idvy = ncvid(idT,'yc',rcode)
+      idvz = ncvid(idT,'yc',rcode)
 
-      idvx = ncvid(idG,'x',rcode)
-      idvy = ncvid(idG,'y',rcode)
-      idvz = ncvid(idG,'z',rcode)
-      idvt = ncvid(idT,'tr',rcode)
-!
+      call ncvgt( idT, idvx, start, count, xc, rcode )
+      call ncvgt( idT, idvy, start, count, yc, rcode )
+      call ncvgt( idT, idvz, start, count, zf, rcode )
+
 
       call ncclos(idT, rcode)
+      write(6,*) 'grid read'
 
-      write(6,*) 'return fromr readcdfcn'
       return
       write(6,*) 'reading in file:', facename
       idF = ncopn(facename, NCNOWRIT,rcode)
 !
-
-      idvx = ncvid(idG,'x',rcode)
-      idvy = ncvid(idG,'y',rcode)
-      idvz = ncvid(idG,'z',rcode)
-!
       idvuf = ncvid(idF,'uf',rcode)
       idvvf = ncvid(idF,'vf',rcode)
       idvwf = ncvid(idF,'wf',rcode)
-!      idvkf = ncvid(idF,'Kz',rcode)
-!
-!
-      call ncvgt( idG, idvx, start, count, xf, rcode )
-      call ncvgt( idG, idvy, start, count, yf, rcode )
-      call ncvgt( idG, idvz, start, count, zf, rcode )
-!ontour
-
-
-
-      write(6,*) 'grid read'
 !
       call ncvgt( idF, idvuf, start, countuf, uf, rcode )
       call ncvgt( idF, idvvf, start, countvf, vf, rcode )
@@ -115,6 +97,7 @@
 
 !      call ncclos(idG, rcode)
       call ncclos(idF, rcode)
+      write(6,*) 'return from readcdfcn'
 
       return
       end

@@ -2,8 +2,6 @@ PROGRAM main
 !----------------------------------------------------
 USE header
 !implicit none
-!INTEGER,PARAMETER :: NI=24,  NJ=24, NK=24,ngrid=3,maxout=20832,   maxint=15768,   int1=13824
-!  use relaxation
 INTEGER step,i,j,k !nsteps,n,initime
 REAL(kind=rc_kind) ::  dtim
 
@@ -12,6 +10,7 @@ initime = 0
 nbegin = initime
 
 ! 1. Initialize the tracers
+CALL init_setup
 CALL tracerinit(0)    !initializes tracer
 ! 2. advection routine
 do step = initime,(initime+nsteps)
@@ -19,7 +18,7 @@ do step = initime,(initime+nsteps)
     if (mod(step,out3d_int).eq.0) then
         nbegin = step
     endif
-    CALL readcdfcn(Tr,uf,vf,wf,xc,yc,zc,xf,yf,zf,nbegin)
+    CALL readcdfcn(nbegin)
     ! 2b. advect the tracer using the velocity fields
     do ivb=1,3
         if(ivb==1) then; dtim=dtf/3.d0; ivs=0;ivf=1;endif;

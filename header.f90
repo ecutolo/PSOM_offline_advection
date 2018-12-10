@@ -2,18 +2,12 @@ MODULE header
 
  ! Definition of the kind of reals:
  integer, parameter :: rc_kind = selected_real_kind(12)
-
-
  !-------------------------------------------------------------------
  !-- grid size
  !----------------------
-
 INTEGER, PARAMETER :: ntr = 1, nconsume = 1
-
-
 ! NI, NJ, NK: dimensions of the model grid.
-! ngrid, maxout, maxint,int1: key parameters for the computation of the nonhydrostatic pressure.
-INTEGER,PARAMETER :: NI=24,  NJ=24, NK=24,ngrid=3,maxout=20832,   maxint=15768,   int1=13824
+INTEGER,PARAMETER :: NI=24,  NJ=24, NK=24
 
 
 
@@ -24,19 +18,15 @@ INTEGER,PARAMETER :: NI=24,  NJ=24, NK=24,ngrid=3,maxout=20832,   maxint=15768, 
   REAL(kind=rc_kind),  PARAMETER :: S0=35.7d0, T0=15.d0 ,R0=1027.d0  !@ S0: mean salinity, T0: mean temperature
                                                                      !@   : sreal= S0+s,Treal=T0+T
                                                                      !@ R0: mean density
-
-
  !-------------------------------------------------------------------
  !-- physical constants
  !---------------------
 
-  REAL(kind=rc_kind),  PARAMETER :: PI=3.14159265358979323846 
-
+  REAL(kind=rc_kind),  PARAMETER :: PI=3.14159265358979323846
   REAL(kind=rc_kind),  PARAMETER :: OMEGA=7.272d-5, FPAR=1.d-4   !@ OMEGA: Earth angular velocity,
                                                                  !@ FPAR: magnitude of Coriolis parameter.
   REAL(kind=rc_kind),  PARAMETER :: gpr= 0.981                   !@ gpr: gravitational acceleration
   REAL(kind=rc_kind),  PARAMETER :: apr=0.6371                   !@ apr: Earth radius
-
   REAL(kind=rc_kind),  PARAMETER :: EPS= 0.1d0, AL=1.d7          !@ EPS: Rossby number, AL: magnitude of the Earth radius,
 
 
@@ -46,14 +36,10 @@ INTEGER,PARAMETER :: NI=24,  NJ=24, NK=24,ngrid=3,maxout=20832,   maxint=15768, 
  !----------------------------
 
   INTEGER :: nsteps                                           !@ number of time steps, in namelist
-
   REAL(kind=rc_kind) ::  dtf                                  !@ dtf: nondimensional time step
   REAL(kind=rc_kind) ::  dtime_dim                            !@ dtf:    dimensional time step (in sec), in namelist
   REAL(kind=rc_kind) ::  dtime                                !@ dtime: time step (obsolete)
-                                                            
   REAL(kind=rc_kind) ::  time_nondim,time_seconds             !@ incremental time (clock)
-
-
   REAL(kind=rc_kind) :: kappah,kaphinv                        !@ kappah: implcitness parameter in the Crank-Nicolson scheme f
                                                               !@ kaphinv: inverse of kappah     
 
@@ -64,15 +50,12 @@ INTEGER,PARAMETER :: NI=24,  NJ=24, NK=24,ngrid=3,maxout=20832,   maxint=15768, 
 
 
   REAL(kind=rc_kind), PARAMETER :: LEN= 1.d5, DL=1.d3         !@ LEN: characteristic length scale, DL: characteristic depth scale
-
   LOGICAL, PARAMETER :: rect = .TRUE., periodicew = .TRUE.
   REAL(kind=rc_kind) :: dx,dy                                 !@ dx, dy: dimensional (in m), in namelist
-
 
   LOGICAL :: lv_flat_bottom                                !@ choice for topography, in namelist
   REAL(kind=rc_kind) :: total_depth                        !@ depth of the domain (in m) (only if lv_flat_bottom), in namelist
   LOGICAL :: use_Shchepetkin                               !@ switch for the baroclinic pressure computation, in namelist
-
 
   REAL(kind=rc_kind),  PARAMETER :: z0= 0.2d0,zm= 0.1d0 
   REAL(kind=rc_kind) :: dztop                              !@ dztop    : depth of the top layer non-dim by DL
@@ -88,23 +71,19 @@ INTEGER,PARAMETER :: NI=24,  NJ=24, NK=24,ngrid=3,maxout=20832,   maxint=15768, 
   !- Switch for hydrostatic
  
   REAL(kind=rc_kind) :: fnhhy                                 !@ fnhhy: 0 for hydrostatic, 1 for nonhydrostatic, in namelist
-                                                            
- 
+
   !- Planetary vorticity                                      
 
   REAL(kind=rc_kind) :: phi0deg                               !@ phi0deg: central latitude, in namelist
   INTEGER :: fplane                                           !@ fplane: 0 for latitude-dependance of f,
                                                               !          1 for a constant f            , in namelist
-
-
-
  !-------------------------------------------------------------------
  !-- diffusion and friction
  !--------------------------
 
 
   REAL(kind=rc_kind) ::  Kx, Ky                              !@ variables used in mixing_horizontal (in m*m/s), in namelist
-                                                           
+
   LOGICAL, PARAMETER :: bottom_linear_drag=.TRUE.            !@ only linear drag is currently supported (see in mixing_vertical routine). 
   REAL(kind=rc_kind) ::  RR                                  !@ bottom friction (in m/s), initialized in namelist
 
@@ -285,83 +264,6 @@ INTEGER,PARAMETER :: NI=24,  NJ=24, NK=24,ngrid=3,maxout=20832,   maxint=15768, 
 
   ! Arrays for pv and vorticity diagnosis
   REAL(kind=rc_kind) :: pvt(NI,NJ,NK),pv1(NI,NJ,NK),pv2(NI,NJ,NK),pv3(NI,NJ,NK),vor1(NI,NJ,NK),vor2(NI,NJ,NK),vor3(NI,NJ,NK)
-
-!------------------------------------------------------------------------!
-!---                         GOTM Variables                          ----!
-!------------------------------------------------------------------------!
-
-  REAL(kind=rc_kind), dimension(           1:NK          ) :: uvarx_x,uvarx_y,uvarx_z
-  REAL(kind=rc_kind), dimension(           1:NK          ) :: d_part1,d_part2,d_part3,d_part4
-
-  ! New - Grad TKE and EPS terms
-  REAL(kind=rc_kind), dimension(0:NI+1,0:NJ+1,0:NK+1)  :: psom_ugradtke, psom_vgradtke, psom_wgradtke
-  REAL(kind=rc_kind), dimension(0:NI+1,0:NJ+1,0:NK+1)  :: psom_ugradeps, psom_vgradeps, psom_wgradeps
-
-  ! layer thickness (resolution), shear frequency, sea grass tke(irrelevant), buoyancy frequency
-  REAL(kind=rc_kind), dimension(  0:NK  )  :: thk, SS2, TKEP, NN1d
-
-  ! Assigning a integer for sign changing
-  INTEGER :: sign, kppcall, selvar
-                                                                           
-  ! Assigning Von Karman constant, reference density, cm0, Mellor Yamada parameter B1
-  REAL(kind=rc_kind) :: k_von = 0.41, rhoref = 1027, cmu0_psom = 5.27046261454271d-1, B1_MY = 16.6
- 
-  ! ASSIGNING THE TKE, EPS, MACROLENGTH, AT CELL CENTERS
-  REAL(kind=rc_kind), dimension(  0:NI+1,0:NJ+1,0:NK+1  ) :: psom_tke, psom_eps, psom_l, psom_P, psom_B
-  
-  ! ASSIGNING A RESULTANT WIND STRESS AND FRICTION VELOCITY PROFILE. THESE ARE 2-D ARRAYS
-  REAL(kind=rc_kind), dimension(  0:NI+1,0:NJ+1  )        :: stx, u_fric
-  REAL(kind=rc_kind), dimension(  0:NI+1,0:NJ+1,0:NK+1  ) :: lthk            
-
-  ! MOMENTUM VISCOSITY AND HEAT DIFFUSIVITY
-  REAL(kind=rc_kind), dimension(  0:NI+1,0:NJ+1,0:NK  ) :: KzMom, KzTr     
-  REAL(kind=rc_kind), dimension(  0:NI+1,0:NJ+1,0:NK  ) :: nnface, ssface, Rig
-
-  ! I NEED THE VALUES OF TURBULENCE PARAMETERS AT THE LAST STEP
-  ! TEST
-  REAL(kind=rc_kind) :: tsp
-  !  REAL(kind=rc_kind) :: tsp1 = 216.d0, tsp2 = 108.d0, tsp3 = 72.d0
-
-  ! Shear, ushear, vshear
-  REAL(kind=rc_kind), dimension(  0:NI+1,0:NJ+1,0:NK  ) :: ush, vsh, shq
-
-  ! Just for getting layer thickness values
-  REAL(kind=rc_kind), dimension(  1:NK  ) :: thickn
-
-  ! For buoyancy flux
-  REAL(kind=rc_kind) :: qflux
-
-  ! For calculating the number of times 'do_turbulence' subroutine is called
-  INTEGER :: cnt
-
-  ! dudz and dvdz at cell face
-  REAL(kind=rc_kind), dimension(  0:NI+1,0:NJ+1,0:NK  ) :: udzf, vdzf, rdzf
-
-  ! Jerlov type variables
-  REAL(kind=rc_kind) :: J_lambda1, J_lambda2, J_A
-
-  ! Assigning variables for buoyancy/heat flux. Short wave, heatloss, and Jerlov water type parameters
-  REAL(kind=rc_kind), dimension(0:NJ+1)  ::  swr, qloss
-
-  REAL(kind=rc_kind), dimension(    0:NI+1,0:NJ+1, 0:NK+1)      :: rho_old
-! ------------------------------------------------------------------------------------
-
-
-
-!------------------------------------------------------------------------!
-!---                  EXPERIMENT-SPECIFIC VARIABLES                  ----!
-!------------------------------------------------------------------------!
-
-! This include directive enables users to define more variables in the header,
-!  that are specific to their experiment without modifying the header source file.
-!
-! By default, header_expe.h is empty.
-
-!#include "header_expe.h"
-
-
-
-
 
 !------------------------------------------------------------------------!
 !---                       END OF MODULE HEADER                      ----!
