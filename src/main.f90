@@ -11,7 +11,7 @@ nbegin = initime
 out3d_int = 100
 
 ! 1. Initialize the tracers
-CALL init_setup
+CALL ini_setup
 CALL tracerinit(0)    !initializes tracer
 ! 2. advection routine
 do step = initime,(initime+nsteps)
