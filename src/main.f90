@@ -5,10 +5,11 @@ USE header
 INTEGER step,i,j,k !nsteps,n,initime
 REAL(kind=rc_kind) ::  dtim
 
-nsteps = 10
+nsteps = 110
 initime = 0
 nbegin = initime
 out3d_int = 100
+dirout="/data/ecutolo/PSOM_output/meander_500m/"
 
 ! 1. Initialize the tracers
 CALL ini_setup
@@ -31,9 +32,11 @@ do step = initime,(initime+nsteps)
     ! 2c. react tracer
     CALL tracersource(step,dtim)
     ! 3. Save the tracer in a netcdf file
+    !print *,dirout
     if (mod(step,out3d_int).eq.0) then
-  !      CALL write_cdf_3D(step,n)
+            CALL write_cdf_3D(step,0)
     endif
+    print*,step
 enddo ! steps
 
 END PROGRAM main
