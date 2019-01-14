@@ -15,10 +15,9 @@ subroutine read_cdf_velocities(nstp)
   integer :: idInFile,idzSliceFile
   integer :: idxc,idyc,idzc,iduf,idvf,idwf
 
-  REAL(kind=rc_kind) ::  rcode, rcode2
+  REAL(kind=rc_kind) ::  rcode
 
   character (len = 550) :: inname_data, zslice_data
-  character (len = *), parameter :: dirout2 = "/data/ecutolo/PSOM_output/meander_500m/"
 
   integer start(3), count(3), countuf(3), countvf(3), countwf(3)
   integer start2d(2), count2d(2)
@@ -42,7 +41,7 @@ subroutine read_cdf_velocities(nstp)
 
   WRITE(zslice_data,'("zslice_",I3.3,".cdf")') NK
   !print *, TRIM(dirout2)//zslice_data
-  idzSliceFile = ncopn(TRIM(dirout2)//zslice_data, NCNOWRIT,rcode)
+  idzSliceFile = ncopn(TRIM(dirout)//zslice_data, NCNOWRIT,rcode)
 
   idxc = ncvid(idzSliceFile,'xc',rcode)
   idyc = ncvid(idzSliceFile,'yc',rcode)
@@ -53,17 +52,17 @@ subroutine read_cdf_velocities(nstp)
   call ncclos(idzSliceFile, rcode)
 
   WRITE(inname_data,'("face_",I5.5,".cdf")') mod(nstp,10)
-  idInFile = ncopn(TRIM(dirout2)//inname_data, NCNOWRIT,rcode2)
+  idInFile = ncopn(TRIM(dirout)//inname_data, NCNOWRIT,rcode)
 
-  iduf = ncvid(idInFile,'uf',rcode2)
-  idvf = ncvid(idInFile,'vf',rcode2)
-  idwf = ncvid(idInFile,'wf',rcode2)
+  iduf = ncvid(idInFile,'uf',rcode)
+  idvf = ncvid(idInFile,'vf',rcode)
+  idwf = ncvid(idInFile,'wf',rcode)
 
-  call ncvgt( idInFile, iduf, start, countuf, uf, rcode2 )
-  call ncvgt( idInFile, idvf, start, countvf, vf, rcode2 )
-  call ncvgt( idInFile, idwf, start, countwf, wf, rcode2 )
+  call ncvgt( idInFile, iduf, start, countuf, uf, rcode )
+  call ncvgt( idInFile, idvf, start, countvf, vf, rcode )
+  call ncvgt( idInFile, idwf, start, countwf, wf, rcode )
 
-  call ncclos(idInFile, rcode2)
+  call ncclos(idInFile, rcode)
 
   return
 end
