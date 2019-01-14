@@ -75,8 +75,8 @@ subroutine write_cdf_3D(stepl,n)
   ! --- START WRITING
 
   ! Output file names
-  WRITE(outname_data,'("advection_full_",I5.5,".cdf")') stepl     ! Cell centers
-  WRITE(outname_face,'("advection_face_",I5.5,".cdf")') stepl     ! Cell faces
+  WRITE(outname_data,'("adv_full_",I5.5,".cdf")') stepl     ! Cell centers
+  WRITE(outname_face,'("adv_face_",I5.5,".cdf")') stepl     ! Cell faces
 
   !---------------------------------------
   ! Write values at the cell centers:

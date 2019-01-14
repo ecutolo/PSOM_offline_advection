@@ -51,7 +51,8 @@ subroutine read_cdf_velocities(nstp)
   call ncvgt( idzSliceFile, idzc, start2d, count2d, zc, rcode )
   call ncclos(idzSliceFile, rcode)
 
-  WRITE(inname_data,'("face_",I5.5,".cdf")') mod(nstp,10)
+  WRITE(inname_data,'("face_",I5.5,".cdf")') nstp
+  print*, inname_data
   idInFile = ncopn(TRIM(dirout)//inname_data, NCNOWRIT,rcode)
 
   iduf = ncvid(idInFile,'uf',rcode)
