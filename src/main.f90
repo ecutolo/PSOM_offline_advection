@@ -19,7 +19,7 @@ do step = initime,(initime+nsteps)
     if (mod(step,out3d_int).eq.0) then
         nbegin = step
     endif
-    CALL readcdfcn(nbegin)
+    CALL read_cdf_velocities(nbegin)
     ! 2b. advect the tracer using the velocity fields
     do ivb=1,3
         if(ivb==1) then; dtim=dtf/3.d0; ivs=0;ivf=1;endif;
